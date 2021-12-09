@@ -9,22 +9,21 @@ pub fn puz2() -> i32 {
     let measurements = lines_from_file("src/day1/input");
     count_increments_with_sliding_windows(measurements)
 }
-
-fn count_increments_with_lines(measurements: Vec<String>) -> i32 {
-    let parsed_measurements = measurements
+// convert vector of strings to vector of i32s
+fn lines_to_ints(lines: Vec<String>) -> Vec<i32> {
+    lines
         .iter()
         .map(|m| m.parse::<i32>().unwrap_or(0))
-        .collect::<Vec<i32>>();
+        .collect::<Vec<i32>>()
+}
 
-    count_increments(parsed_measurements)
+fn count_increments_with_lines(measurements: Vec<String>) -> i32 {
+    count_increments(lines_to_ints(measurements))
 }
 
 fn count_increments_with_sliding_windows(measurements: Vec<String>) -> i32 {
     let mut sliding_windows: Vec<i32> = Vec::new();
-    let parsed_measurements = measurements
-        .iter()
-        .map(|m| m.parse::<i32>().unwrap_or(0))
-        .collect::<Vec<i32>>();
+    let parsed_measurements = lines_to_ints(measurements);
 
     for n in 0..parsed_measurements.len() - 2 {
         sliding_windows.push(parsed_measurements.iter().skip(n).take(3).sum());
