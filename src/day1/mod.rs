@@ -1,32 +1,25 @@
-use crate::util::lines_from_file;
+use crate::util;
 
 pub fn puz1() -> i32 {
-    let measurements = lines_from_file("src/day1/input");
+    let measurements = util::lines_from_file("src/day1/input");
     count_increments_with_lines(measurements)
 }
 
 pub fn puz2() -> i32 {
-    let measurements = lines_from_file("src/day1/input");
+    let measurements = util::lines_from_file("src/day1/input");
     count_increments_with_sliding_windows(measurements)
-}
-// convert vector of strings to vector of i32s
-fn lines_to_ints(lines: Vec<String>) -> Vec<i32> {
-    lines
-        .iter()
-        .map(|m| m.parse::<i32>().unwrap_or(0))
-        .collect::<Vec<i32>>()
 }
 
 fn count_increments_with_lines(measurements: Vec<String>) -> i32 {
-    count_increments(lines_to_ints(measurements))
+    count_increments(util::lines_to_ints(measurements))
 }
 
 fn count_increments_with_sliding_windows(measurements: Vec<String>) -> i32 {
     let mut sliding_windows: Vec<i32> = Vec::new();
-    let parsed_measurements = lines_to_ints(measurements);
+    let parsed_measurements = util::lines_to_ints(measurements);
 
-    for n in 0..parsed_measurements.len() - 2 {
-        sliding_windows.push(parsed_measurements.iter().skip(n).take(3).sum());
+    for index in 0..parsed_measurements.len() - 2 {
+        sliding_windows.push(parsed_measurements.iter().skip(index).take(3).sum());
     }
 
     count_increments(sliding_windows)

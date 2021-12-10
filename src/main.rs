@@ -1,11 +1,17 @@
 mod util;
 mod day1;
 mod day2;
+mod day3;
 
 fn main() {
     println!("Running AOC 2021");
-    println!("Result of day 1 puzzle 1 is: {}", day1::puz1().to_string());
-    println!("Result of day 1 puzzle 2 is: {}", day1::puz2().to_string());
-    println!("Result of day 2 puzzle 1 is: {}", day2::puz1().to_string());
-    println!("Result of day 2 puzzle 2 is: {}", day2::puz2().to_string());
+    println!("Day 1");
+    println!("Puzzle 1: {}", day1::puz1().to_string());
+    println!("Puzzle 2: {}", day1::puz2().to_string());
+    println!("Day 2");
+    println!("Puzzle 1: {}", day2::puz1().to_string());
+    println!("Puzzle 2: {}", day2::puz2().to_string());
+    println!("Day 3");
+    println!("Puzzle 1: {}", day3::puz1().to_string());
+    println!("Puzzle 2: {}", day3::puz2().to_string());
 }

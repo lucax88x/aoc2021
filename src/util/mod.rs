@@ -12,3 +12,10 @@ pub fn lines_from_file(filename: impl AsRef<Path>) -> Vec<String> {
         .map(|l| l.expect("Could not parse line"))
         .collect()
 }
+
+pub fn lines_to_ints(lines: Vec<String>) -> Vec<i32> {
+    lines
+        .iter()
+        .map(|m| m.parse::<i32>().unwrap_or(0))
+        .collect::<Vec<i32>>()
+}

@@ -1,16 +1,16 @@
-use crate::util::lines_from_file;
+use crate::util;
 
 pub fn puz1() -> i32 {
-    let coordinates = lines_from_file("src/day2/input");
-    navigate_ship(coordinates)
+    let input = util::lines_from_file("src/day2/input");
+    navigate_ship(&input)
 }
 
 pub fn puz2() -> i32 {
-    let coordinates = lines_from_file("src/day2/input");
-    navigate_ship_after_reading_manual(coordinates)
+    let input = util::lines_from_file("src/day2/input");
+    navigate_ship_after_reading_manual(&input)
 }
 
-fn navigate_ship(coordinates: Vec<String>) -> i32 {
+fn navigate_ship(coordinates: &Vec<String>) -> i32 {
     let forward_coordinates = filter_coordinates_by_prefix(&coordinates, "forward");
     let up_coordinates = filter_coordinates_by_prefix(&coordinates, "up");
     let down_coordinates = filter_coordinates_by_prefix(&coordinates, "down");
@@ -25,7 +25,7 @@ fn navigate_ship(coordinates: Vec<String>) -> i32 {
     position * depth
 }
 
-fn navigate_ship_after_reading_manual(coordinates: Vec<String>) -> i32 {
+fn navigate_ship_after_reading_manual(coordinates: &Vec<String>) -> i32 {
     let mut position = 0;
     let mut depth = 0;
     let mut aim = 0;
@@ -94,12 +94,12 @@ mod tests {
 
     #[test]
     fn puzzle_1_example() {
-        assert_eq!(navigate_ship(build_test_input()), 150);
+        assert_eq!(navigate_ship(&build_test_input()), 150);
     }
 
     #[test]
     fn puzzle_2_example() {
-        assert_eq!(navigate_ship_after_reading_manual(build_test_input()), 900);
+        assert_eq!(navigate_ship_after_reading_manual(&build_test_input()), 900);
     }
 
     #[test]
