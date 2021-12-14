@@ -31,6 +31,8 @@ fn navigate_ship_after_reading_manual(coordinates: &Vec<String>) -> i32 {
     let mut aim = 0;
 
     for coordinate in coordinates {
+        let direction = coordinate.split_whitespace().nth(0).unwrap_or("");
+
         let unit = coordinate
             .split_whitespace()
             .nth(1)
@@ -38,15 +40,14 @@ fn navigate_ship_after_reading_manual(coordinates: &Vec<String>) -> i32 {
             .parse::<i32>()
             .unwrap_or(0);
 
-        if coordinate.starts_with("up") {
-            aim -= unit;
-        } else if coordinate.starts_with("down") {
-            aim += unit;
-        } else if coordinate.starts_with("forward") {
-            position += unit;
-            depth += aim * unit;
-        } else {
-            panic!("Unknown command: {}", coordinate);
+        match direction {
+            "down" => aim += unit,
+            "up" => aim -= unit,
+            "forward" => {
+                position += unit;
+                depth += aim * unit;
+            }
+            _ => panic!("invalid direction {}", coordinate),
         }
     }
 
