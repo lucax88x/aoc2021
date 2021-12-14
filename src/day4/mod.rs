@@ -7,50 +7,43 @@ pub fn puz1() -> i32 {
 
 pub fn puz2() -> i32 {
     let input = util::lines_from_file("src/day4/input");
-    todo(&input)
+    let_last_bingo_win(&input)
 }
 
 fn win_bingo(input: &Vec<String>) -> i32 {
-    let extracted_numbers = input
-        .iter()
-        .nth(0)
-        .unwrap()
-        .split(',')
-        .map(|c| c.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
-
-    let mut bingos: Vec<Vec<Vec<i32>>> = Vec::new();
-
-    for grid_index in (2..input.len()).step_by(6) {
-        let mut grid: Vec<Vec<i32>> = vec![vec![0; 5]; 5];
-        for grid_row_index in 0..5 {
-            let grid_row = &input[grid_index + grid_row_index];
-
-            let grid_numbers = grid_row
-                .split_whitespace()
-                .map(|c| c.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>();
-
-            for grid_col_index in 0..5 {
-                grid[grid_row_index][grid_col_index] = grid_numbers[grid_col_index];
-            }
-        }
-
-        bingos.push(grid);
-    }
+    let bingos = build_bingos(input);
+    let extracted_numbers = extract_numbers(input);
 
     for extracted_number_index in 0..extracted_numbers.len() {
         for bingo in &bingos {
-            let horizontal_check = check(true, bingo, &extracted_numbers, extracted_number_index);
+            let result = check_if_bingo_won(&bingo, &extracted_numbers, extracted_number_index);
+            if result > 0 {
+                return result;
+            }
+        }
+    }
 
-            if horizontal_check > 0 {
-                return horizontal_check;
-            } else {
-                let vertical_check =
-                    check(false, bingo, &extracted_numbers, extracted_number_index);
+    0
+}
 
-                if vertical_check > 0 {
-                    return vertical_check;
+fn let_last_bingo_win(input: &Vec<String>) -> i32 {
+    let bingos = build_bingos(input);
+    let extracted_numbers = extract_numbers(input);
+    let mut winning_bingos: Vec<usize> = vec![bingos.len() - 1];
+
+    for extracted_number_index in 0..extracted_numbers.len() {
+        for bingo_index in 0..bingos.len() {
+            if winning_bingos.contains(&bingo_index) {
+                continue;
+            }
+
+            let bingo = &bingos[bingo_index];
+            let result = check_if_bingo_won(&bingo, &extracted_numbers, extracted_number_index);
+            if result > 0 {
+                winning_bingos.push(bingo_index);
+
+                if winning_bingos.len() == bingos.len() {
+                    return result;
                 }
             }
         }
@@ -59,11 +52,7 @@ fn win_bingo(input: &Vec<String>) -> i32 {
     0
 }
 
-fn todo(input: &Vec<String>) -> i32 {
-    0
-}
-
-fn check(
+fn check_if_bingo_won_on_direction(
     horizontal_check: bool,
     bingo: &Vec<Vec<i32>>,
     extracted_numbers: &Vec<i32>,
@@ -109,6 +98,65 @@ fn check(
     0
 }
 
+fn check_if_bingo_won(
+    bingo: &Vec<Vec<i32>>,
+    extracted_numbers: &Vec<i32>,
+    extracted_number_index: usize,
+) -> i32 {
+    let horizontal_check =
+        check_if_bingo_won_on_direction(true, bingo, &extracted_numbers, extracted_number_index);
+
+    if horizontal_check > 0 {
+        return horizontal_check;
+    } else {
+        let vertical_check = check_if_bingo_won_on_direction(
+            false,
+            bingo,
+            &extracted_numbers,
+            extracted_number_index,
+        );
+
+        if vertical_check > 0 {
+            return vertical_check;
+        }
+    }
+    0
+}
+
+fn build_bingos(input: &Vec<String>) -> Vec<Vec<Vec<i32>>> {
+    let mut bingos: Vec<Vec<Vec<i32>>> = Vec::new();
+
+    for grid_index in (2..input.len()).step_by(6) {
+        let mut grid: Vec<Vec<i32>> = vec![vec![0; 5]; 5];
+        for grid_row_index in 0..5 {
+            let grid_row = &input[grid_index + grid_row_index];
+
+            let grid_numbers = grid_row
+                .split_whitespace()
+                .map(|c| c.parse::<i32>().unwrap())
+                .collect::<Vec<i32>>();
+
+            for grid_col_index in 0..5 {
+                grid[grid_row_index][grid_col_index] = grid_numbers[grid_col_index];
+            }
+        }
+
+        bingos.push(grid);
+    }
+
+    bingos
+}
+
+fn extract_numbers(input: &Vec<String>) -> Vec<i32> {
+    return input
+        .iter()
+        .nth(0)
+        .unwrap()
+        .split(',')
+        .map(|c| c.parse::<i32>().unwrap())
+        .collect::<Vec<i32>>();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -147,7 +195,7 @@ mod tests {
 
     #[test]
     fn puzzle_2_example() {
-        assert_eq!(todo(&build_test_input()), 0);
+        assert_eq!(let_last_bingo_win(&build_test_input()), 1924);
     }
 
     #[test]
@@ -157,6 +205,6 @@ mod tests {
 
     #[test]
     fn puzzle_2_answer() {
-        assert_eq!(puz2(), 0);
+        assert_eq!(puz2(), 16830);
     }
 }
